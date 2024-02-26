@@ -1,0 +1,1 @@
+`MicroECS` is a header-only, small & compact library for simple ECS needs. Primarily made for game engines but can be used for simulations or other applications as well.
