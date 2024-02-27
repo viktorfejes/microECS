@@ -1,18 +1,24 @@
 #pragma once
 
-#include "Core/Logging/LoggingManager.h"
-#include "ECS/Registry.h"
-#include "ECS/Type.h"
-#include "ECS/Types.h"
+#include "Registry.h"
+#include "Type.h"
+#include "Types.h"
 
-namespace ECS
+namespace microECS
 {
     class Entity
     {
     public:
-        Entity(EntityID id, Registry* registry);
+        Entity(EntityID id, Registry* registry)
+            : m_ID(id),
+              m_pRegistry(registry)
+        {
+        }
 
-        void Destroy();
+        void Destroy()
+        {
+            m_pRegistry->DestroyEntity(m_ID);
+        }
 
         template <typename T>
         Entity& Add()
@@ -67,7 +73,10 @@ namespace ECS
             return *this;
         }
 
-        ECS::Type Type() const;
+        microECS::Type Type() const
+        {
+            return microECS::Type(m_pRegistry->GetEntityType(m_ID));
+        }
 
     private:
         EntityID m_ID;

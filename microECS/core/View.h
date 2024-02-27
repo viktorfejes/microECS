@@ -1,14 +1,14 @@
 #pragma once
 
-#include "ECS/ComponentPool.h"
-#include "ECS/Entity.h"
-#include "ECS/Registry.h"
-#include "ECS/Types.h"
+#include "ComponentPool.h"
+#include "Entity.h"
+#include "Registry.h"
+#include "Types.h"
 
 #include <functional>
 #include <utility>
 
-namespace ECS
+namespace microECS
 {
     template <typename... T>
     class View

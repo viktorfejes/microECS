@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <limits>
 
-namespace ECS
+namespace microECS
 {
     using EntityID = uint32_t;
     using ComponentID = uint8_t;
