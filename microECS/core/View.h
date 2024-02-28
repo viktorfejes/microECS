@@ -43,6 +43,7 @@ namespace microECS
                 for (auto& [entityID, componentIndex] : entities)
                 {
                     Entity entity(entityID, m_Registry);
+                    // This has only needs to check if the entity has the OTHER components... this saves some time
                     if (entity.Has<T...>())
                     {
                         func(entityID, *entity.Get<T>()...);

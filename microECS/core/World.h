@@ -56,10 +56,21 @@ namespace microECS
             return microECS::Entity(m_Registry.GetEntityIDByName(name), &m_Registry);
         }
 
+        /**
+         * Returns a view of entities with the specified components.
+         *
+         * @tparam `Components` The components to filter entities by.
+         * @return A view of entities with the specified components.
+         */
         template <typename... Components>
         microECS::View<Components...> View()
         {
             return microECS::View<Components...>(&m_Registry);
+        }
+
+        template <typename T>
+        void Sort()
+        {
         }
 
     private:

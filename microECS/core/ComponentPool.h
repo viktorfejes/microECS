@@ -113,6 +113,7 @@ namespace microECS
         }
 
         size_t GetCount() const { return m_Count; }
+        size_t Size() const { return m_Count; }
 
         /**
          * @brief Get the name of the component type.
@@ -129,6 +130,17 @@ namespace microECS
         void Cleanup()
         {
             DeallocateComponentPool();
+        }
+
+        /*
+         * @brief Array subscript operator overload to access the component data at the specified index.
+         *
+         * @param index The index of the component data to access.
+         * @return A void pointer to the component data at the specified index.
+         */
+        void* operator[](size_t index)
+        {
+            return static_cast<uint8_t*>(m_pComponents) + index * m_ComponentSize;
         }
 
     private:
