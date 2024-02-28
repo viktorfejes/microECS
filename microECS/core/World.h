@@ -68,9 +68,20 @@ namespace microECS
             return microECS::View<Components...>(&m_Registry);
         }
 
-        template <typename T>
-        void Sort()
+        template <typename T, typename Func>
+        void Sort(Func comparison)
         {
+            ComponentID componentID = m_Registry.GetComponentID<T>();
+            ComponentPool& pool = m_Registry.GetComponentPool(componentID);
+
+            // TODO: I think in the lambda we can use type T* instead of void* and static_cast
+            // since we should know the type when calling the sort.
+
+            // TODO: We could use introsort instead of quicksort for better performance.
+            // Maybe pdqsort, only downside is that's not in-place.
+            qsort(pool.Data(), pool.Size(), sizeof(T), [comparison](const T* lhs, const T* rhs) {
+                return comparison(*lhs, *rhs);
+            });
         }
 
     private:

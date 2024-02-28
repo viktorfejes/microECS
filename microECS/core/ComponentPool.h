@@ -115,6 +115,8 @@ namespace microECS
         size_t GetCount() const { return m_Count; }
         size_t Size() const { return m_Count; }
 
+        void* Data() { return m_pComponents; }
+
         /**
          * @brief Get the name of the component type.
          *
