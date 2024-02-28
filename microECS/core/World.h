@@ -74,14 +74,19 @@ namespace microECS
             ComponentID componentID = m_Registry.GetComponentID<T>();
             ComponentPool& pool = m_Registry.GetComponentPool(componentID);
 
+            int comparisonWrapper(const void* a, const void* b)
+            {
+                const T* lhs = static_cast<const T*>(a);
+                const T* rhs = static_cast<const T*>(b);
+                return comparison(*lhs, *rhs);
+            }
+
             // TODO: I think in the lambda we can use type T* instead of void* and static_cast
             // since we should know the type when calling the sort.
 
             // TODO: We could use introsort instead of quicksort for better performance.
             // Maybe pdqsort, only downside is that's not in-place.
-            qsort(pool.Data(), pool.Size(), sizeof(T), [comparison](const T* lhs, const T* rhs) {
-                return comparison(*lhs, *rhs);
-            });
+            qsort(pool.Data(), pool.Size(), sizeof(T), comparisonWrapper);
         }
 
     private:
