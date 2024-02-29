@@ -5,7 +5,9 @@
 #include "Types.h"
 #include "View.h"
 
+#include <functional>
 #include <string>
+#include <utility>
 
 namespace microECS
 {
@@ -68,25 +70,46 @@ namespace microECS
             return microECS::View<Components...>(&m_Registry);
         }
 
-        template <typename T, typename Func>
-        void Sort(Func comparison)
+        template <typename T>
+        void Sort(const std::function<bool(const T&, const T&)>& compare)
         {
             ComponentID componentID = m_Registry.GetComponentID<T>();
             ComponentPool& pool = m_Registry.GetComponentPool(componentID);
 
-            int comparisonWrapper(const void* a, const void* b)
-            {
-                const T* lhs = static_cast<const T*>(a);
-                const T* rhs = static_cast<const T*>(b);
-                return comparison(*lhs, *rhs);
-            }
-
-            // TODO: I think in the lambda we can use type T* instead of void* and static_cast
-            // since we should know the type when calling the sort.
-
             // TODO: We could use introsort instead of quicksort for better performance.
             // Maybe pdqsort, only downside is that's not in-place.
-            qsort(pool.Data(), pool.Size(), sizeof(T), comparisonWrapper);
+            quicksort(pool.Data(), 0, pool.Size(), compare);
+        }
+
+    private:
+        template <typename T>
+        int partition(void* pool, int low, int high, const std::function<bool(const T&, const T&)>& compare)
+        {
+            T* arr = reinterpret_cast<T*>(pool);
+            T pivot = arr[high];
+            int i = (low - 1);
+
+            for (int j = low; j <= high - 1; j++)
+            {
+                if (compare(arr[j], pivot))
+                {
+                    i++;
+                    std::swap(arr[i], arr[j]);
+                }
+            }
+            std::swap(arr[i + 1], arr[high]);
+            return (i + 1);
+        }
+
+        template <typename T>
+        void quicksort(void* pool, int low, int high, const std::function<bool(const T&, const T&)>& compare)
+        {
+            if (low < high)
+            {
+                int pi = partition<T>(pool, low, high, compare);
+                quicksort<T>(pool, low, pi - 1, compare);
+                quicksort<T>(pool, pi + 1, high, compare);
+            }
         }
 
     private:
