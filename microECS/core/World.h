@@ -99,7 +99,7 @@ namespace microECS
                     std::swap(arr[i], arr[j]);
                 }
             }
-            pool.SwapMaps(i, j);
+            pool.SwapMaps(i, high);
             std::swap(arr[i + 1], arr[high]);
             return (i + 1);
         }
