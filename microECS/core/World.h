@@ -78,14 +78,15 @@ namespace microECS
 
             // TODO: We could use introsort instead of quicksort for better performance.
             // Maybe pdqsort, only downside is that's not in-place.
-            quicksort(pool.Data(), 0, pool.Size(), compare);
+            quicksort(pool, 0, pool.Size(), compare);
         }
 
     private:
         template <typename T>
-        int partition(void* pool, int low, int high, const std::function<bool(const T&, const T&)>& compare)
+        int partition(ComponentPool& pool, int low, int high, const std::function<bool(const T&, const T&)>& compare)
         {
-            T* arr = reinterpret_cast<T*>(pool);
+            void* poolData = pool.Data();
+            T* arr = reinterpret_cast<T*>(poolData);
             T pivot = arr[high];
             int i = (low - 1);
 
@@ -94,15 +95,17 @@ namespace microECS
                 if (compare(arr[j], pivot))
                 {
                     i++;
+                    pool.SwapMaps(i, j);
                     std::swap(arr[i], arr[j]);
                 }
             }
+            pool.SwapMaps(i, j);
             std::swap(arr[i + 1], arr[high]);
             return (i + 1);
         }
 
         template <typename T>
-        void quicksort(void* pool, int low, int high, const std::function<bool(const T&, const T&)>& compare)
+        void quicksort(ComponentPool& pool, int low, int high, const std::function<bool(const T&, const T&)>& compare)
         {
             if (low < high)
             {

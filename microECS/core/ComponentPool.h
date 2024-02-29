@@ -126,6 +126,18 @@ namespace microECS
 
         std::unordered_map<EntityID, size_t>& GetEntities() { return m_EntityToComponentMap; }
 
+        void SwapMaps(size_t index1, size_t index2)
+        {
+            EntityID entityID1 = m_ComponentToEntityMap[index1];
+            EntityID entityID2 = m_ComponentToEntityMap[index2];
+
+            m_ComponentToEntityMap[index1] = entityID2;
+            m_ComponentToEntityMap[index2] = entityID1;
+
+            m_EntityToComponentMap[entityID1] = index2;
+            m_EntityToComponentMap[entityID2] = index1;
+        }
+
         /**
          * @brief Provides a public cleanup method for the component pool.
          */
