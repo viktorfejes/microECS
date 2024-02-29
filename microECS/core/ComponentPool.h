@@ -124,7 +124,9 @@ namespace microECS
          */
         std::string GetName() const { return m_Name; }
 
+        EntityID GetEntityID(size_t index) const { return m_ComponentToEntityMap[index]; }
         std::unordered_map<EntityID, size_t>& GetEntities() { return m_EntityToComponentMap; }
+        std::vector<uint32_t>& GetComponentMap() { return m_ComponentToEntityMap; }
 
         void SwapMaps(size_t index1, size_t index2)
         {

@@ -25,30 +25,52 @@ namespace microECS
                 ComponentID componentID = {m_Registry->GetComponentID<T>()...};
                 ComponentPool& componentPool = m_Registry->GetComponentPool(componentID);
 
-                for (auto& [entityID, componentIndex] : componentPool.GetEntities())
+                // If the pool is empty, there's nothing to iterate over.
+                if (componentPool.Size() == 0)
                 {
-                    func(entityID, *static_cast<T*>(m_Registry->GetMutComponent(entityID, componentID))...);
+                    return;
                 }
+
+                for (size_t i = 0; i < componentPool.Size(); i++)
+                {
+                    EntityID entityID = componentPool.GetEntityID(i);
+                    func(entityID, *static_cast<T*>(componentPool[i])...);
+                }
+
+                // for (auto& [entityID, componentIndex] : componentPool.GetEntities())
+                // {
+                //     func(entityID, *static_cast<T*>(m_Registry->GetMutComponent(entityID, componentID))...);
+                // }
             }
             else
             {
                 ComponentPool& smallestPool = GetSmallestComponentPool<T...>();
 
-                auto& entities = smallestPool.GetEntities();
-                if (entities.empty())
+                // If the pool is empty, there's nothing to iterate over.
+                if (smallestPool.Size() == 0)
                 {
                     return;
                 }
 
-                for (auto& [entityID, componentIndex] : entities)
+                for (size_t i = 0; i < smallestPool.Size(); i++)
                 {
+                    EntityID entityID = smallestPool.GetEntityID(i);
                     Entity entity(entityID, m_Registry);
-                    // This has only needs to check if the entity has the OTHER components... this saves some time
                     if (entity.Has<T...>())
                     {
-                        func(entityID, *entity.Get<T>()...);
+                        func(entity.GetID(), *entity.Get<T>()...);
                     }
                 }
+
+                // for (auto& [entityID, componentIndex] : entities)
+                // {
+                //     Entity entity(entityID, m_Registry);
+                //     // This has only needs to check if the entity has the OTHER components... this saves some time
+                //     if (entity.Has<T...>())
+                //     {
+                //         func(entityID, *entity.Get<T>()...);
+                //     }
+                // }
             }
         }
 
