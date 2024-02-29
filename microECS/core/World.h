@@ -76,9 +76,15 @@ namespace microECS
             ComponentID componentID = m_Registry.GetComponentID<T>();
             ComponentPool& pool = m_Registry.GetComponentPool(componentID);
 
+            // If the pool is empty or has only one element, it's already sorted.
+            if (pool.Size() < 2)
+            {
+                return;
+            }
+
             // TODO: We could use introsort instead of quicksort for better performance.
             // Maybe pdqsort, only downside is that's not in-place.
-            quicksort(pool, 0, pool.Size(), compare);
+            quicksort(pool, 0, pool.Size() - 1, compare);
         }
 
     private:
