@@ -58,7 +58,7 @@ namespace microECS
                     Entity entity(entityID, m_Registry);
                     if (entity.Has<T...>())
                     {
-                        func(entity.GetID(), *entity.Get<T>()...);
+                        func(entityID, *entity.Get<T>()...);
                     }
                 }
 
