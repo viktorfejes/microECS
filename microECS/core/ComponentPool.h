@@ -113,8 +113,20 @@ namespace microECS
         }
 
         size_t GetCount() const { return m_Count; }
+
+        /**
+         * @brief Returns the number of elements in the component pool.
+         * (Same as .size() for std::vector and std::array.)
+         *
+         * @return The number of elements in the component pool.
+         */
         size_t Size() const { return m_Count; }
 
+        /**
+         * Returns a pointer to the underlying data array.
+         *
+         * @return A void pointer to the underlying data array.
+         */
         void* Data() { return m_pComponents; }
 
         /**
@@ -124,7 +136,14 @@ namespace microECS
          */
         std::string GetName() const { return m_Name; }
 
+        /**
+         * @brief Retrieves the entity ID associated with the component at the specified index.
+         *
+         * @param index The index of the component in the pool.
+         * @return The entity ID associated with the component.
+         */
         EntityID GetEntityID(size_t index) const { return m_ComponentToEntityMap[index]; }
+
         std::unordered_map<EntityID, size_t>& GetEntities() { return m_EntityToComponentMap; }
         std::vector<uint32_t>& GetComponentMap() { return m_ComponentToEntityMap; }
 
@@ -141,6 +160,25 @@ namespace microECS
         }
 
         /**
+         * Checks if the component pool is sorted.
+         * It is used to avoid unnecessary sorting operations. The sorting flag is set to true
+         * when the component pool is sorted, and set to false when a new component is added.
+         *
+         * @warning This flag will still be set to true if nothing is modified between two different
+         * sorting operations. It is up to the user to set it to false when necessary.
+         *
+         * @return true if the component pool is sorted, false otherwise.
+         */
+        bool IsSorted() const { return m_Sorted; }
+
+        /**
+         * @brief Sets the sorted flag of the component pool.
+         *
+         * @param sorted The new value of the sorted flag.
+         */
+        void SetSorted(bool sorted) { m_Sorted = sorted; }
+
+        /**
          * @brief Provides a public cleanup method for the component pool.
          */
         void Cleanup()
@@ -148,7 +186,7 @@ namespace microECS
             DeallocateComponentPool();
         }
 
-        /*
+        /**
          * @brief Array subscript operator overload to access the component data at the specified index.
          *
          * @param index The index of the component data to access.
@@ -239,7 +277,7 @@ namespace microECS
             // Decrement the m_Count
             m_Count--;
 
-            // QUESTION: Should we shrink the pool if the count is less than quarter the capacity?
+            // QUESTION: Should we shrink the pool if the count is less than quarter the capacity to save memory?
         }
 
         /**
@@ -296,5 +334,8 @@ namespace microECS
         // Maps
         std::unordered_map<EntityID, size_t> m_EntityToComponentMap;
         std::vector<uint32_t> m_ComponentToEntityMap;
+
+        // Dirty flag for sorting performance help
+        bool m_Sorted = false;
     };
 }

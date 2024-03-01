@@ -70,21 +70,36 @@ namespace microECS
             return microECS::View<Components...>(&m_Registry);
         }
 
+        /**
+         * Sorts the elements in the container using the specified comparison function.
+         * Currently uses basic Quicksort algorithm.
+         * The order of equal elements is not guaranteed to be preserved.
+         *
+         * @todo Use introsort instead of quicksort for better performance.
+         * @todo Maybe use pdqsort, only downside is pdqsort is not in-place.
+         * @todo Check if the values are sortable (operator< and operator> must be defined for the values).
+         *
+         * @tparam T The type of the component.
+         * @param compare The comparison function used to determine the order of the elements.
+         */
         template <typename T>
         void Sort(const std::function<bool(const T&, const T&)>& compare)
         {
             ComponentID componentID = m_Registry.GetComponentID<T>();
             ComponentPool& pool = m_Registry.GetComponentPool(componentID);
 
+            // If pool is already sorted, return.
             // If the pool is empty or has only one element, it's already sorted.
-            if (pool.Size() < 2)
+            if (pool.IsSorted() || pool.Size() < 2)
             {
                 return;
             }
 
             // TODO: We could use introsort instead of quicksort for better performance.
-            // Maybe pdqsort, only downside is that's not in-place.
+            // Maybe pdqsort, only downside is pdqsort is not in-place.
             quicksort(pool, 0, pool.Size() - 1, compare);
+
+            pool.SetSorted(true);
         }
 
     private:

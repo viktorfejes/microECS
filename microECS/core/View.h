@@ -36,11 +36,6 @@ namespace microECS
                     EntityID entityID = componentPool.GetEntityID(i);
                     func(entityID, *static_cast<T*>(componentPool[i])...);
                 }
-
-                // for (auto& [entityID, componentIndex] : componentPool.GetEntities())
-                // {
-                //     func(entityID, *static_cast<T*>(m_Registry->GetMutComponent(entityID, componentID))...);
-                // }
             }
             else
             {
@@ -58,19 +53,10 @@ namespace microECS
                     Entity entity(entityID, m_Registry);
                     if (entity.Has<T...>())
                     {
+                        // This could be modified like the sizeof 1 case without Get<T>()?
                         func(entityID, *entity.Get<T>()...);
                     }
                 }
-
-                // for (auto& [entityID, componentIndex] : entities)
-                // {
-                //     Entity entity(entityID, m_Registry);
-                //     // This has only needs to check if the entity has the OTHER components... this saves some time
-                //     if (entity.Has<T...>())
-                //     {
-                //         func(entityID, *entity.Get<T>()...);
-                //     }
-                // }
             }
         }
 
