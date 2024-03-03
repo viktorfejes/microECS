@@ -42,6 +42,8 @@
 
 # Makefiles
 Makefile
+makefile
+*.make
 
 # Binaries
 bin/

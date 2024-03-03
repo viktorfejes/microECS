@@ -78,6 +78,12 @@ namespace microECS
             return microECS::Type(m_pRegistry->GetEntityType(m_ID));
         }
 
+        bool IsValid() const { return m_pRegistry->ValidEntity(m_ID); }
+
+        std::string GetName() const { return m_pRegistry->GetEntityName(m_ID); }
+
+        EntityID GetID() const { return m_ID; }
+
     private:
         EntityID m_ID;
         Registry* m_pRegistry;

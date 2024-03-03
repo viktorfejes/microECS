@@ -290,11 +290,29 @@ namespace microECS
             return componentID;
         }
 
+        bool ValidEntity(EntityID entityID) const
+        {
+            return entityID < m_NextEntityID && entityID != INVALID_ENTITY_ID;
+        }
+
+        std::string GetEntityName(EntityID entityID) const
+        {
+            for (auto& entity : m_EntityNameMap)
+            {
+                if (entity.second == entityID)
+                {
+                    return entity.first;
+                }
+            }
+
+            return "";
+        }
+
     private:
         std::vector<ComponentPool> m_ComponentPools;
         std::unordered_map<std::type_index, ComponentID> m_ComponentTypeMap;
 
-        std::vector<EntityID> m_Entities;
+        // std::vector<EntityID> m_Entities;
         std::unordered_map<std::string, EntityID> m_EntityNameMap;
         std::queue<EntityID> m_FreeEntityIDs;
         EntityID m_NextEntityID = 0;
