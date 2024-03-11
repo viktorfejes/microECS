@@ -202,10 +202,10 @@ private:
     void* AllocateComponentPool(size_t componentSize, size_t alignment) {
         m_PoolSize = INIT_COMPONENT_POOL_SIZE;
         // TODO: `_aligned_malloc` is not available on all platforms!
-        return _aligned_malloc(componentSize * m_PoolSize, alignment);
+        // return _aligned_malloc(componentSize * m_PoolSize, alignment);
 
         // Allocate a new component pool with specified alignment
-        // return ::operator new(componentSize * m_PoolSize, std::align_val_t(alignment));
+        return ::operator new(componentSize * m_PoolSize, std::align_val_t(alignment));
     }
 
     /**
@@ -216,8 +216,8 @@ private:
     void DeallocateComponentPool() {
         // Deallocate the component pool
         // TODO: THIS IS WIN ONLY!
-        _aligned_free(m_pComponents);
-        // ::operator delete(m_pComponents, std::align_val_t(m_Alignment));
+        // _aligned_free(m_pComponents);
+        ::operator delete(m_pComponents, std::align_val_t(m_Alignment));
     }
 
     /**
@@ -320,4 +320,5 @@ private:
     // Dirty flag for sorting performance help
     bool m_Sorted = false;
 };
+
 } // namespace microECS
