@@ -13,7 +13,7 @@ namespace microECS {
 #ifdef NDEBUG
 #define ASSERT(expr, msg) ((void)0)
 #else
-void assertFailure(const char* expr, const char* file, int line, const char* msg) {
+static void assertFailure(const char* expr, const char* file, int line, const char* msg) {
     std::fprintf(stderr, "Assertion failed: %s, %s, file %s, line %d.\n", expr, msg, file, line);
     std::abort();
 }
