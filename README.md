@@ -13,16 +13,18 @@
 ```cpp
 #include "microECS/microECS.h"
 
-struct Position
-{
+struct Position {
     float x = 0.0f;
     float y = 0.0f;
 };
 
-struct Velocity
-{
+struct Velocity {
     float dx = 0.0f;
     float dy = 0.0f;
+};
+
+struct Gravity {
+    float force = 9.81f;
 };
 
 
@@ -69,6 +71,14 @@ int main() {
         position.x += 1.0f;
         position.y += 1.0f;
     });
+
+    // Singleton components are available on World instances
+    // These components don't belong to an Entity but the World
+    // The Set<>() method either creates them or changes them
+    world.Set<Gravity>({ 9.81f });
+
+    // Getting a singleton component returns a const pointer
+    const Gravity* singletonGravity = world.Get<Gravity>();
 }
 
 ```
