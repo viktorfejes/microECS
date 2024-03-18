@@ -66,7 +66,7 @@ int main() {
     });
 
     // Views
-    microECS::View view = World.View<Position>();
+    microECS::View view = world.View<Position>();
     view.Each([](microECS::EntityID entityID, Position& position) {
         position.x += 1.0f;
         position.y += 1.0f;
